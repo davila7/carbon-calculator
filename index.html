@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        input[type="text"] {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        .result {
+            margin-top: 20px;
+        }
+
+        .result p {
+            margin: 5px 0;
+        }
+    </style>
+    .result {
+    margin-top: 20px;
+    }
+
+    .result p {
+    margin: 5px 0;
+    }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Website Carbon API</h1>
+        <input type="text" id="urlInput" placeholder="Enter website URL">
+        <button onclick="fetchData()">Check Carbon Footprint</button>
+        <div class="result"="result"></div>
+    </div>
+
+    <script>
+        async function fetchData() {
+            const urlInput = document.getElementById('urlInput').value;
+            const apiUrl = `https://api.websitecarbon.com/site?url=${encodeURIComponent(urlInput)}`;
+
+            try {
+                const response = await fetch(apiUrl);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const data = await response.json();
+                displayResult(data);
+            } catch (error) {
+                console.error('There has been a problem with your fetch operation:', error);
+                document.getElementById('result').innerHTML = '<p style="color: redError fetching data. Please try again.</p>';
+            }
+        }
+
+        function displayResult(data) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = `
+                <p><strong>URL:</strong> ${data.url}</p>
+                <p><strong>Green:</strong> ${data.green ? 'Yes' : 'No'}</p>
+                <p><strong>Bytes:</strong> ${data.bytes}</p>
+                <p><strong>Cleaner Than:</strong> ${data.cleanerThan * 100}%</p>
+                <p><strong>Adjusted Bytes:</strong> ${data.statistics.adjustedBytes}</p>
+                <p><strong>:</strong> ${data.statistics.energy} kWh</p>
+                <p><strong>CO2 (Grid):</strong> ${data.statistics.co2.grid.grams} grams, ${data.statistics.co2.grid.litres} litres</p>
+                <p><strong>CO2 (Renewable):</strong> ${data.statistics.co2.renewable.grams} grams, ${data.statistics.co2.renewable.litres} litres</p>
+            `;
+        }
+    </script>
+</body>
+
+</html>
